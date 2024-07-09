@@ -1,12 +1,8 @@
 import { Elevator } from '../models/elevator';
+import { Building } from '../models/building';
 
-// Initialize 16 elevators with default values
-const elevators: Elevator[] = Array.from({ length: 16 }, (_, id) => ({
-    id,
-    currentFloor: 0,
-    targetFloor: null,
-    direction: 'idle',
-}));
+// Create a building instance with initial configuration
+const building = new Building(10, 5); // Default to 10 floors and 5 active elevators
 
 /**
  * Get the status of all elevators.
@@ -14,10 +10,10 @@ const elevators: Elevator[] = Array.from({ length: 16 }, (_, id) => ({
  * @returns {Elevator[]} Array of elevator statuses.
  * 
  * This function returns the current status of all elevators in the system.
- * The status includes each elevator's ID, current floor, target floor, and direction.
+ * The status includes each elevator's ID, current floor, target floor, and status.
  */
 export const getStatus = (): Elevator[] => {
-    return elevators;
+    return building.getElevatorStatus();
 };
 
 /**
@@ -26,15 +22,15 @@ export const getStatus = (): Elevator[] => {
  * @param {number} floor - The floor number where the pickup request is made.
  * @param {number} direction - The direction of the requested pickup (-1 for down, 1 for up).
  * 
- * This function processes a pickup request by assigning the first idle elevator
+ * This function processes a pickup request by assigning the best elevator
  * to the pickup request. The elevator's target floor and direction are updated accordingly.
  */
 export const pickup = (floor: number, direction: number): void => {
-    // Simplified algorithm to assign the first idle elevator to the pickup request
-    const elevator = elevators.find(e => e.direction === 'idle');
+    // Simplified algorithm to assign the best available elevator to the pickup request
+    const elevator = building.elevators.find(e => e.status === 'idle');
     if (elevator) {
         elevator.targetFloor = floor;
-        elevator.direction = direction === 1 ? 'up' : 'down';
+        elevator.status = direction === 1 ? 'up' : 'down';
     }
 };
 
@@ -46,14 +42,14 @@ export const pickup = (floor: number, direction: number): void => {
  * @param {number} target - The target floor number of the elevator.
  * 
  * This function updates the status of a specific elevator. It sets the elevator's current floor,
- * target floor, and direction based on the provided parameters.
+ * target floor, and status based on the provided parameters.
  */
 export const update = (id: number, floor: number, target: number): void => {
-    const elevator = elevators.find(e => e.id === id);
-    if (elevator) {
+    const elevator = building.elevators.find(e => e.id === id);
+    if (elevator && elevator.status !== 'off') {
         elevator.currentFloor = floor;
         elevator.targetFloor = target;
-        elevator.direction = target > floor ? 'up' : 'down';
+        elevator.status = target > floor ? 'up' : 'down';
     }
 };
 
@@ -65,19 +61,31 @@ export const update = (id: number, floor: number, target: number): void => {
  * it becomes idle and its target floor is cleared.
  */
 export const step = (): void => {
-    elevators.forEach(elevator => {
-        if (elevator.targetFloor !== null) {
+    building.elevators.forEach(elevator => {
+        if (elevator.targetFloor !== null && elevator.status !== 'off') {
             if (elevator.currentFloor < elevator.targetFloor) {
                 elevator.currentFloor++;
-                elevator.direction = 'up';
+                elevator.status = 'up';
             } else if (elevator.currentFloor > elevator.targetFloor) {
                 elevator.currentFloor--;
-                elevator.direction = 'down';
+                elevator.status = 'down';
             } else {
                 // Elevator has reached the target floor
-                elevator.direction = 'idle';
+                elevator.status = 'idle';
                 elevator.targetFloor = null;
             }
         }
     });
+};
+
+/**
+ * Configure the building with a new number of floors and active elevators.
+ * 
+ * @param {number} numberOfFloors - The total number of floors in the building.
+ * @param {number} activeElevators - The number of elevators that are active and in use.
+ * 
+ * This function updates the building's configuration and sets the status of elevators accordingly.
+ */
+export const configureBuilding = (numberOfFloors: number, activeElevators: number): void => {
+    building.updateConfig(numberOfFloors, activeElevators);
 };
