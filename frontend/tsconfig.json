@@ -1,26 +1,37 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    /* Basic Options */
+    "target": "es5",                          // Specify ECMAScript target version: "ES3" (default), "ES5", "ES6"/"ES2015", "ES2016", "ES2017", "ES2018", "ES2019", "ES2020", "ESNext".
+    "lib": ["dom", "dom.iterable", "esnext"], // Specify library files to be included in the compilation.
+
+    /* JavaScript Support */
+    "allowJs": true,                          // Allow JavaScript files to be compiled.
+    
+    /* Strict Type-Checking Options */
+    "strict": true,                           // Enable all strict type-checking options.
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
+    "noFallthroughCasesInSwitch": true,       // Report errors for fallthrough cases in switch statements.
+    
+    /* Module Resolution Options */
+    "module": "esnext",                       // Specify module code generation: "commonjs", "amd", "system", "umd", "es6", "es2015", "esnext".
+    "moduleResolution": "node",               // Specify module resolution strategy: "node" (Node.js) or "classic" (TypeScript pre-1.6).
+    "esModuleInterop": true,                  // Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports.
+    "allowSyntheticDefaultImports": true,     // Allow default imports from modules with no default export. This does not affect code emit, just type checking.
+    "resolveJsonModule": true,                // Include modules imported with .json extension.
+    
+    /* Source Map Options */
+    "isolatedModules": true,                  // Transpile each file as a separate module (similar to 'ts.transpileModule').
+    
+    /* Output Options */
+    "noEmit": true,                           // Do not emit outputs.
+    
+    /* JSX */
+    "jsx": "react-jsx"                        // Specify JSX code generation: "preserve", "react-native", or "react". Use "react-jsx" with React 17+.
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

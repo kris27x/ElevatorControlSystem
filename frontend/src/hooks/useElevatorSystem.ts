@@ -32,7 +32,7 @@ const useElevatorSystem = () => {
         const fetchStatus = async (): Promise<void> => {
             try {
                 // Send a GET request to the backend server to retrieve elevator statuses
-                const response = await axios.get('/api/elevators/status');
+                const response = await axios.get('http://localhost:5000/api/elevators/status');
                 // Update the state with the retrieved data
                 setElevators(response.data);
             } catch (error) {

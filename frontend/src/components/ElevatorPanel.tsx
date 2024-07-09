@@ -27,7 +27,7 @@ const ElevatorPanel: React.FC = () => {
     const handlePickup = async (): Promise<void> => {
         try {
             // Send a POST request to the backend with the floor and direction
-            await axios.post('/api/elevators/pickup', { floor, direction });
+            await axios.post('http://localhost:5000/api/elevators/pickup', { floor, direction });
             alert('Pickup request sent');
         } catch (error) {
             alert('Error sending pickup request');
