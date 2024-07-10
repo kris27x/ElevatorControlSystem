@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { getStatus, pickup, update, step, configureBuilding as configureBuildingService } from '../services/elevatorService';
 import { pso } from '../services/psoService';
+import { Building } from '../models/building';
+
+// Create a building instance with initial configuration
+const building = new Building(10, 5);
 
 /**
  * Controller to handle the retrieval of elevator statuses.
  * 
- * @param {Request} req - The HTTP request object.
+ * @param {Request} _req - The HTTP request object (not used).
  * @param {Response} res - The HTTP response object.
  * 
  * @returns {void}
@@ -13,7 +17,7 @@ import { pso } from '../services/psoService';
  * This function handles GET requests to retrieve the current status of all elevators.
  * It uses the getStatus service function to fetch the data and sends it as a JSON response.
  */
-export const getElevatorStatus = (req: Request, res: Response): void => {
+export const getElevatorStatus = (_req: Request, res: Response): void => {
     res.json(getStatus());
 };
 
@@ -31,7 +35,7 @@ export const getElevatorStatus = (req: Request, res: Response): void => {
  */
 export const pickupElevator = (req: Request, res: Response): void => {
     const { floor, direction } = req.body;
-    const bestElevator = pso(floor, direction);
+    const bestElevator = pso(floor, direction, building.elevators, building.config.numberOfFloors);
     if (bestElevator) {
         pickup(floor, direction);
         res.status(200).send(`Pickup request received and assigned to Elevator ${bestElevator.id}`);
@@ -61,7 +65,7 @@ export const updateElevator = (req: Request, res: Response): void => {
 /**
  * Controller to execute a simulation step for all elevators.
  * 
- * @param {Request} req - The HTTP request object.
+ * @param {Request} _req - The HTTP request object (not used).
  * @param {Response} res - The HTTP response object.
  * 
  * @returns {void}
@@ -69,7 +73,7 @@ export const updateElevator = (req: Request, res: Response): void => {
  * This function handles POST requests to execute a simulation step for all elevators.
  * It calls the step service function to perform the simulation step and sends a success response back to the client.
  */
-export const executeStep = (req: Request, res: Response): void => {
+export const executeStep = (_req: Request, res: Response): void => {
     step();
     res.status(200).send('Step executed');
 };

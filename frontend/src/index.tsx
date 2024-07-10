@@ -7,8 +7,9 @@ import reportWebVitals from './reportWebVitals';
 /**
  * Entry point of the React application.
  * 
- * This file is responsible for rendering the root component (App) into the DOM. It uses ReactDOM.createRoot
- * to create a root for the React application and renders the App component within a strict mode context.
+ * This file is responsible for rendering the root component (App) into the DOM. 
+ * It uses ReactDOM.createRoot to create a root for the React application and 
+ * renders the App component within a strict mode context.
  * 
  * @returns {void}
  */

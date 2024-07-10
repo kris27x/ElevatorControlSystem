@@ -1,5 +1,6 @@
 import { Elevator } from '../models/elevator';
 import { Building } from '../models/building';
+import { pso } from './psoService'; // Import the pso function
 
 // Create a building instance with initial configuration
 const building = new Building(10, 5); // Default to 10 floors and 5 active elevators
@@ -22,15 +23,17 @@ export const getStatus = (): Elevator[] => {
  * @param {number} floor - The floor number where the pickup request is made.
  * @param {number} direction - The direction of the requested pickup (-1 for down, 1 for up).
  * 
- * This function processes a pickup request by assigning the best available elevator
- * to the pickup request. The elevator's target floor and status are updated accordingly.
+ * This function processes a pickup request by using the PSO algorithm
+ * to assign the best available elevator to the pickup request. The elevator's
+ * target floor and status are updated accordingly.
  */
 export const pickup = (floor: number, direction: number): void => {
-    // Simplified algorithm to assign the best available elevator to the pickup request
-    const elevator = building.elevators.find(e => e.status === 'idle');
-    if (elevator) {
-        elevator.targetFloor = floor;
-        elevator.status = direction === 1 ? 'up' : 'down';
+    const bestElevator = pso(floor, direction, building.elevators, building.config.numberOfFloors); // Update the function call
+    if (bestElevator) {
+        bestElevator.targetFloor = floor;
+        bestElevator.status = direction === 1 ? 'up' : 'down';
+    } else {
+        console.log('No suitable elevator found for pickup request');
     }
 };
 
