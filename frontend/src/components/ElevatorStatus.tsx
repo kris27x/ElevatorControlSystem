@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
 interface Elevator {
     id: number;
@@ -11,40 +10,13 @@ interface Elevator {
 /**
  * ElevatorStatus component.
  * 
- * This component fetches and displays the status of all elevators. It shows each elevator's ID, current floor,
- * target floor, and status. The component makes use of the useEffect hook to fetch data from the backend
- * when the component mounts, and the useState hook to manage the fetched data.
+ * This component displays the status of all elevators. It shows each elevator's ID, current floor,
+ * target floor, and status. The elevator statuses are passed as props to this component.
  * 
+ * @param {{ elevators: Elevator[] }} props - The props object containing the array of elevator statuses.
  * @returns {JSX.Element} The rendered component displaying the status of all elevators.
  */
-const ElevatorStatus: React.FC = () => {
-    const [elevators, setElevators] = useState<Elevator[]>([]);
-
-    /**
-     * Fetch the status of all elevators from the backend server.
-     * 
-     * This function is called when the component mounts (due to the empty dependency array in useEffect).
-     * It sends a GET request to the backend server to retrieve the status of all elevators and updates the
-     * component's state with the retrieved data.
-     * 
-     * @returns {Promise<void>} A promise that resolves when the data has been successfully fetched and the state updated.
-     */
-    useEffect(() => {
-        const fetchStatus = async (): Promise<void> => {
-            try {
-                // Send a GET request to the backend server to retrieve elevator statuses
-                const response = await axios.get('http://localhost:5000/api/elevators/status');
-                // Update the state with the retrieved data
-                setElevators(response.data);
-            } catch (error) {
-                console.error('Error fetching elevator status', error);
-            }
-        };
-
-        // Call the fetchStatus function to fetch elevator statuses
-        fetchStatus();
-    }, []);
-
+const ElevatorStatus: React.FC<{ elevators: Elevator[] }> = ({ elevators }) => {
     return (
         <div>
             <h2>Elevator Status</h2>

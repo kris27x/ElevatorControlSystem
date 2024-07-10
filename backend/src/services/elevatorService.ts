@@ -22,8 +22,8 @@ export const getStatus = (): Elevator[] => {
  * @param {number} floor - The floor number where the pickup request is made.
  * @param {number} direction - The direction of the requested pickup (-1 for down, 1 for up).
  * 
- * This function processes a pickup request by assigning the best elevator
- * to the pickup request. The elevator's target floor and direction are updated accordingly.
+ * This function processes a pickup request by assigning the best available elevator
+ * to the pickup request. The elevator's target floor and status are updated accordingly.
  */
 export const pickup = (floor: number, direction: number): void => {
     // Simplified algorithm to assign the best available elevator to the pickup request

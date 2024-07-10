@@ -7,9 +7,10 @@ import axios from 'axios';
  * This component provides a user interface for making elevator pickup requests.
  * It allows the user to specify the floor and direction (up or down) and send the request to the backend server.
  * 
+ * @param {{ fetchStatus: () => Promise<void> }} props - The props object containing the fetchStatus function.
  * @returns {JSX.Element} The rendered component.
  */
-const ElevatorPanel: React.FC = () => {
+const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchStatus }) => {
     // State variables for the floor number and direction of the pickup request
     const [floor, setFloor] = useState<number>(0);
     const [direction, setDirection] = useState<number>(1);
@@ -30,6 +31,7 @@ const ElevatorPanel: React.FC = () => {
             // Send a POST request to the backend with the floor and direction
             await axios.post('http://localhost:5000/api/elevators/pickup', { floor, direction });
             alert('Pickup request sent');
+            fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error sending pickup request', error);
             alert('Error sending pickup request');
