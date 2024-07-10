@@ -16,6 +16,7 @@ import axios from 'axios';
  */
 const HomePage: React.FC = () => {
     const { elevators, fetchStatus } = useElevatorSystem();
+    const [numberOfFloors, setNumberOfFloors] = React.useState<number>(10);
 
     /**
      * Handle the simulation step.
@@ -38,11 +39,23 @@ const HomePage: React.FC = () => {
         }
     };
 
+    /**
+     * Handle the building configuration update.
+     * 
+     * This function is called when the building configuration is updated.
+     * It updates the number of floors state.
+     * 
+     * @param {number} newNumberOfFloors - The new number of floors.
+     */
+    const handleBuildingConfigUpdate = (newNumberOfFloors: number) => {
+        setNumberOfFloors(newNumberOfFloors);
+    };
+
     return (
         <div>
             <h1>Elevator Control System</h1>
-            <BuildingConfig fetchStatus={fetchStatus} />
-            <ElevatorPanel fetchStatus={fetchStatus} />
+            <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
+            <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
             <ElevatorStatus elevators={elevators} />
             <button onClick={handleSimulateStep}>Simulate Step</button>
         </div>

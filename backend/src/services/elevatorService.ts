@@ -88,4 +88,24 @@ export const step = (): void => {
  */
 export const configureBuilding = (numberOfFloors: number, activeElevators: number): void => {
     building.updateConfig(numberOfFloors, activeElevators);
+    resetElevators(activeElevators); // Reset only active elevators to idle
+};
+
+/**
+ * Reset all active elevators to the ground floor with no target and set inactive elevators to 'off'.
+ * 
+ * @param {number} activeElevators - The number of active elevators to reset.
+ */
+export const resetElevators = (activeElevators: number): void => {
+    building.elevators.forEach((elevator, index) => {
+        if (index < activeElevators) {
+            elevator.currentFloor = 0;
+            elevator.targetFloor = null;
+            elevator.status = 'idle';
+        } else {
+            elevator.currentFloor = 0;
+            elevator.targetFloor = null;
+            elevator.status = 'off';
+        }
+    });
 };

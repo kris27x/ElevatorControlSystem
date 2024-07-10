@@ -7,10 +7,10 @@ import axios from 'axios';
  * This component provides a user interface for configuring the number of floors and active elevators.
  * It allows the user to specify the number of floors and active elevators in the building and send this configuration to the backend.
  * 
- * @param {{ fetchStatus: () => Promise<void> }} props - The props object containing the fetchStatus function.
+ * @param {{ fetchStatus: () => Promise<void>, onConfigUpdate: (numberOfFloors: number) => void }} props - The props object containing the fetchStatus function and the onConfigUpdate callback.
  * @returns {JSX.Element} The rendered component.
  */
-const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchStatus }) => {
+const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdate: (numberOfFloors: number) => void }> = ({ fetchStatus, onConfigUpdate }) => {
     // State variables for the number of floors and active elevators
     const [numberOfFloors, setNumberOfFloors] = useState<number>(10);
     const [activeElevators, setActiveElevators] = useState<number>(5);
@@ -29,7 +29,8 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchS
         try {
             await axios.post('http://localhost:5000/api/elevators/configure', { numberOfFloors, activeElevators });
             alert('Building configuration updated');
-            fetchStatus(); // Fetch the updated status
+            await fetchStatus(); // Fetch the updated status to reset elevator statuses
+            onConfigUpdate(numberOfFloors); // Update the number of floors in the parent component
         } catch (error) {
             console.error('Error updating building configuration', error);
             alert('Error updating building configuration');

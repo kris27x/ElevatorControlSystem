@@ -7,10 +7,10 @@ import axios from 'axios';
  * This component provides a user interface for making elevator pickup requests.
  * It allows the user to specify the floor and direction (up or down) and send the request to the backend server.
  * 
- * @param {{ fetchStatus: () => Promise<void> }} props - The props object containing the fetchStatus function.
+ * @param {{ fetchStatus: () => Promise<void>, numberOfFloors: number }} props - The props object containing the fetchStatus function and the maximum number of floors.
  * @returns {JSX.Element} The rendered component.
  */
-const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchStatus }) => {
+const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors: number }> = ({ fetchStatus, numberOfFloors }) => {
     // State variables for the floor number and direction of the pickup request
     const [floor, setFloor] = useState<number>(0);
     const [direction, setDirection] = useState<number>(1);
@@ -38,6 +38,24 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchSt
         }
     };
 
+    /**
+     * Handle the change of the floor input value.
+     * 
+     * This function ensures that the entered floor value does not exceed the maximum number of floors.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+     */
+    const handleFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value, 10);
+        if (value >= 0 && value <= numberOfFloors) {
+            setFloor(value);
+        } else if (value > numberOfFloors) {
+            setFloor(numberOfFloors);
+        } else {
+            setFloor(0);
+        }
+    };
+
     return (
         <div>
             <h2>Elevator Panel</h2>
@@ -47,8 +65,9 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void> }> = ({ fetchSt
                     <input
                         type="number"
                         value={floor}
-                        onChange={(e) => setFloor(parseInt(e.target.value, 10))}
+                        onChange={handleFloorChange}
                         min="0"
+                        max={numberOfFloors}
                     />
                 </label>
             </div>
