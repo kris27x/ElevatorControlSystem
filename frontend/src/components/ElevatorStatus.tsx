@@ -5,14 +5,14 @@ interface Elevator {
     id: number;
     currentFloor: number;
     targetFloor: number | null;
-    direction: 'up' | 'down' | 'idle';
+    status: 'up' | 'down' | 'idle' | 'off';
 }
 
 /**
  * ElevatorStatus component.
  * 
  * This component fetches and displays the status of all elevators. It shows each elevator's ID, current floor,
- * target floor, and direction. The component makes use of the useEffect hook to fetch data from the backend
+ * target floor, and status. The component makes use of the useEffect hook to fetch data from the backend
  * when the component mounts, and the useState hook to manage the fetched data.
  * 
  * @returns {JSX.Element} The rendered component displaying the status of all elevators.
@@ -33,7 +33,7 @@ const ElevatorStatus: React.FC = () => {
         const fetchStatus = async (): Promise<void> => {
             try {
                 // Send a GET request to the backend server to retrieve elevator statuses
-                const response = await axios.get('/api/elevators/status');
+                const response = await axios.get('http://localhost:5000/api/elevators/status');
                 // Update the state with the retrieved data
                 setElevators(response.data);
             } catch (error) {
@@ -51,7 +51,7 @@ const ElevatorStatus: React.FC = () => {
             <ul>
                 {elevators.map((elevator) => (
                     <li key={elevator.id}>
-                        Elevator {elevator.id}: Floor {elevator.currentFloor} - Target {elevator.targetFloor} - Direction {elevator.direction}
+                        Elevator {elevator.id}: Floor {elevator.currentFloor} - Target {elevator.targetFloor ?? 'None'} - Status {elevator.status}
                     </li>
                 ))}
             </ul>

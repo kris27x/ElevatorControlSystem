@@ -10,6 +10,7 @@ import axios from 'axios';
  * @returns {JSX.Element} The rendered component.
  */
 const ElevatorPanel: React.FC = () => {
+    // State variables for the floor number and direction of the pickup request
     const [floor, setFloor] = useState<number>(0);
     const [direction, setDirection] = useState<number>(1);
 
@@ -30,6 +31,7 @@ const ElevatorPanel: React.FC = () => {
             await axios.post('http://localhost:5000/api/elevators/pickup', { floor, direction });
             alert('Pickup request sent');
         } catch (error) {
+            console.error('Error sending pickup request', error);
             alert('Error sending pickup request');
         }
     };
@@ -37,24 +39,29 @@ const ElevatorPanel: React.FC = () => {
     return (
         <div>
             <h2>Elevator Panel</h2>
-            <label>
-                Floor:
-                <input
-                    type="number"
-                    value={floor}
-                    onChange={(e) => setFloor(parseInt(e.target.value, 10))}
-                />
-            </label>
-            <label>
-                Direction:
-                <select
-                    value={direction}
-                    onChange={(e) => setDirection(parseInt(e.target.value, 10))}
-                >
-                    <option value={1}>Up</option>
-                    <option value={-1}>Down</option>
-                </select>
-            </label>
+            <div>
+                <label>
+                    Floor:
+                    <input
+                        type="number"
+                        value={floor}
+                        onChange={(e) => setFloor(parseInt(e.target.value, 10))}
+                        min="0"
+                    />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Direction:
+                    <select
+                        value={direction}
+                        onChange={(e) => setDirection(parseInt(e.target.value, 10))}
+                    >
+                        <option value={1}>Up</option>
+                        <option value={-1}>Down</option>
+                    </select>
+                </label>
+            </div>
             <button onClick={handlePickup}>Call Elevator</button>
         </div>
     );

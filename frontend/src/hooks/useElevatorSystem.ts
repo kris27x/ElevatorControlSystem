@@ -5,7 +5,7 @@ interface Elevator {
     id: number;
     currentFloor: number;
     targetFloor: number | null;
-    direction: 'up' | 'down' | 'idle';
+    status: 'up' | 'down' | 'idle' | 'off';
 }
 
 /**
@@ -17,7 +17,8 @@ interface Elevator {
  * 
  * @returns {{ elevators: Elevator[] }} An object containing the array of elevator statuses.
  */
-const useElevatorSystem = () => {
+const useElevatorSystem = (): { elevators: Elevator[] } => {
+    // State variable to store the status of all elevators
     const [elevators, setElevators] = useState<Elevator[]>([]);
 
     /**
@@ -26,6 +27,8 @@ const useElevatorSystem = () => {
      * This function is invoked when the hook is first used. It sends a GET request to the backend server
      * to retrieve the status of all elevators. The retrieved data is then used to update the state of the elevators.
      * 
+     * @async
+     * @function
      * @returns {Promise<void>} A promise that resolves when the data has been successfully fetched and the state updated.
      */
     useEffect(() => {
