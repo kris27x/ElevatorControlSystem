@@ -30,7 +30,7 @@ export const getStatus = (): Elevator[] => {
 export const pickup = (floor: number, direction: number): void => {
     const bestElevator = pso(floor, direction, building.elevators, building.config.numberOfFloors); // Update the function call
     if (bestElevator) {
-        bestElevator.targetFloor = floor;
+        bestElevator.targetFloors.push(floor);
         bestElevator.status = direction === 1 ? 'up' : 'down';
     } else {
         console.log('No suitable elevator found for pickup request');
@@ -51,7 +51,9 @@ export const update = (id: number, floor: number, target: number): void => {
     const elevator = building.elevators.find(e => e.id === id);
     if (elevator && elevator.status !== 'off') {
         elevator.currentFloor = floor;
-        elevator.targetFloor = target;
+        if (target !== null) {
+            elevator.targetFloors.push(target);
+        }
         elevator.status = target > floor ? 'up' : 'down';
     }
 };
@@ -65,17 +67,18 @@ export const update = (id: number, floor: number, target: number): void => {
  */
 export const step = (): void => {
     building.elevators.forEach(elevator => {
-        if (elevator.targetFloor !== null && elevator.status !== 'off') {
-            if (elevator.currentFloor < elevator.targetFloor) {
+        if (elevator.targetFloors.length > 0 && elevator.status !== 'off') {
+            const targetFloor = elevator.targetFloors[0];
+            if (elevator.currentFloor < targetFloor) {
                 elevator.currentFloor++;
                 elevator.status = 'up';
-            } else if (elevator.currentFloor > elevator.targetFloor) {
+            } else if (elevator.currentFloor > targetFloor) {
                 elevator.currentFloor--;
                 elevator.status = 'down';
             } else {
                 // Elevator has reached the target floor
-                elevator.status = 'idle';
-                elevator.targetFloor = null;
+                elevator.targetFloors.shift();
+                elevator.status = elevator.targetFloors.length > 0 ? 'up' : 'idle';
             }
         }
     });
@@ -103,11 +106,11 @@ export const resetElevators = (activeElevators: number): void => {
     building.elevators.forEach((elevator, index) => {
         if (index < activeElevators) {
             elevator.currentFloor = 0;
-            elevator.targetFloor = null;
+            elevator.targetFloors = [];
             elevator.status = 'idle';
         } else {
             elevator.currentFloor = 0;
-            elevator.targetFloor = null;
+            elevator.targetFloors = [];
             elevator.status = 'off';
         }
     });

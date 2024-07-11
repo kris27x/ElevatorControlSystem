@@ -3,7 +3,7 @@
  * 
  * @property {number} id - Unique identifier for the elevator.
  * @property {number} currentFloor - Current floor where the elevator is located.
- * @property {number | null} targetFloor - Target floor to which the elevator is moving.
+ * @property {number[]} targetFloors - List of target floors to which the elevator is moving.
  * @property {'up' | 'down' | 'idle' | 'off'} status - Current status of the elevator.
  * - 'up' indicates the elevator is moving up.
  * - 'down' indicates the elevator is moving down.
@@ -13,6 +13,6 @@
 export interface Elevator {
     id: number;
     currentFloor: number;
-    targetFloor: number | null;
+    targetFloors: number[];
     status: 'up' | 'down' | 'idle' | 'off';
 }

@@ -132,5 +132,9 @@ export const pso = (floor: number, direction: number, elevators: Elevator[], num
     }
 
     const bestParticle = particles.find(p => p.position === globalBestPosition);
-    return bestParticle ? elevators.find(e => e.id === bestParticle.id) || null : null;
+    if (bestParticle) {
+        return elevators.find(e => e.id === bestParticle.id) || null;
+    } else {
+        return null;
+    }
 };

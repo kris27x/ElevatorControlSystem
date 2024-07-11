@@ -4,7 +4,7 @@ import axios from 'axios';
 interface Elevator {
     id: number;
     currentFloor: number;
-    targetFloor: number | null;
+    targetFloors: number[]; // Updated to handle multiple targets
     status: 'up' | 'down' | 'idle' | 'off';
 }
 

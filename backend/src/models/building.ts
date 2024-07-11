@@ -14,7 +14,7 @@ export interface BuildingConfig {
  * 
  * @property {number} id - Unique identifier for the elevator.
  * @property {number} currentFloor - Current floor where the elevator is located.
- * @property {number | null} targetFloor - Target floor to which the elevator is moving.
+ * @property {number[]} targetFloors - List of target floors to which the elevator is moving.
  * @property {'up' | 'down' | 'idle' | 'off'} status - Current status of the elevator.
  * - 'up' indicates the elevator is moving up.
  * - 'down' indicates the elevator is moving down.
@@ -24,7 +24,7 @@ export interface BuildingConfig {
 export interface Elevator {
     id: number;
     currentFloor: number;
-    targetFloor: number | null;
+    targetFloors: number[];
     status: 'up' | 'down' | 'idle' | 'off';
 }
 
@@ -49,7 +49,7 @@ export class Building {
         this.elevators = Array.from({ length: 16 }, (_, id) => ({
             id,
             currentFloor: 0,
-            targetFloor: null,
+            targetFloors: [],
             status: id < activeElevators ? 'idle' : 'off'
         }));
     }
@@ -68,7 +68,7 @@ export class Building {
         this.elevators.forEach((elevator, index) => {
             elevator.status = index < activeElevators ? 'idle' : 'off';
             if (index >= activeElevators) {
-                elevator.targetFloor = null;
+                elevator.targetFloors = [];
             }
         });
     }
