@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getStatus, pickup, update, step, configureBuilding as configureBuildingService } from '../services/elevatorService';
-import { pso } from '../services/psoService';
+import { selectBestElevator } from '../services/algorithm';
 import { Building } from '../models/building';
 
 // Create a building instance with initial configuration
@@ -30,12 +30,12 @@ export const getElevatorStatus = (_req: Request, res: Response): void => {
  * @returns {void}
  * 
  * This function handles POST requests to request an elevator pickup.
- * It extracts the floor and direction from the request body, then uses the PSO algorithm
+ * It extracts the floor and direction from the request body, then uses the selectBestElevator function
  * to determine the best elevator for the pickup. It updates the elevator's target floor and status.
  */
 export const pickupElevator = (req: Request, res: Response): void => {
     const { floor, direction } = req.body;
-    const bestElevator = pso(floor, direction, building.elevators, building.config.numberOfFloors);
+    const bestElevator = selectBestElevator(building.elevators, floor, direction);
     if (bestElevator) {
         pickup(floor, direction);
         res.status(200).send(`Pickup request received and assigned to Elevator ${bestElevator.id}`);
