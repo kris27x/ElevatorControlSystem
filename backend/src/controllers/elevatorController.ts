@@ -110,7 +110,7 @@ export const configureBuilding = (req: Request, res: Response): void => {
  */
 export const addTargetFloor = (req: Request, res: Response): void => {
     const { id, targetFloor } = req.body;
-    const elevator = building.elevators.find(e => e.id === id && e.status !== 'off');
+    const elevator = building.elevators.find(e => e.id === id);
     if (elevator) {
         addTarget(id, targetFloor);
         res.status(200).send(`Target floor ${targetFloor} added to Elevator ${id}`);
