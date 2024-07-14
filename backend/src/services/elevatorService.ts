@@ -38,7 +38,7 @@ export const pickup = (floor: number, direction: number): void => {
 };
 
 /**
- * Update the status of a specific elevator.
+ * Refresh the status of a specific elevator.
  * 
  * @param {number} id - The unique identifier of the elevator.
  * @param {number} floor - The current floor number of the elevator.
@@ -55,14 +55,14 @@ export const updateStatus = (id: number, floor: number, target: number): void =>
 };
 
 /**
- * Update the status of a specific elevator.
+ * Update the status of a specific elevator and push the target.
  * 
  * @param {number} id - The unique identifier of the elevator.
  * @param {number} floor - The current floor number of the elevator.
  * @param {number} target - The target floor number of the elevator.
  * 
  * This function updates the status of a specific elevator. It sets the elevator's current floor,
- * target floor, and status based on the provided parameters.
+ * target floor, status based on the provided parameters and target is pushed.
  */
 export const update = (id: number, floor: number, target: number): void => {
     const elevator = building.elevators.find(e => e.id === id);
@@ -87,6 +87,7 @@ export const addTarget = (id: number, targetFloor: number): void => {
     const elevator = building.elevators.find(e => e.id === id);
     if (elevator && elevator.status !== 'off') {
         elevator.targetFloors.push(targetFloor);
+        updateStatus(elevator.id, elevator.currentFloor, targetFloor);
     }
 };
 
@@ -95,7 +96,7 @@ export const addTarget = (id: number, targetFloor: number): void => {
  * 
  * This function simulates the movement of all elevators by one step. Each elevator's current floor
  * is adjusted based on its target floor and direction. If an elevator reaches its target floor,
- * it becomes idle and its target floor is cleared.
+ * it becomes idle and its target floor is cleared. All matching target floors are removed from the array.
  */
 export const step = (): void => {
     building.elevators.forEach(elevator => {
@@ -108,13 +109,14 @@ export const step = (): void => {
                 elevator.currentFloor--;
                 elevator.status = 'down';
             } else {
-                // Elevator has reached the target floor
-                elevator.targetFloors.shift();
+                // Elevator has reached all target floors
                 elevator.status = elevator.targetFloors.length > 0 ? 'up' : 'idle';
             }
+            elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
         }
     });
 };
+
 
 /**
  * Configure the building with a new number of floors and active elevators.
