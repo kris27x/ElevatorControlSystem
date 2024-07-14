@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /**
  * ElevatorPanel component.
@@ -29,6 +31,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                 setAvailableElevators(available);
             } catch (error) {
                 console.error('Error fetching elevator status', error);
+                toast.error('Error fetching elevator status');
             }
         };
 
@@ -47,14 +50,19 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
      * @returns {Promise<void>} A promise that resolves when the request is completed.
      */
     const handlePickup = async (): Promise<void> => {
+        if (floor < 0 || floor > numberOfFloors) {
+            toast.error(`Floor must be between 0 and ${numberOfFloors}`);
+            return;
+        }
+
         try {
             // Send a POST request to the backend with the floor and direction
             await axios.post('http://localhost:5000/api/elevators/pickup', { floor, direction });
-            alert('Pickup request sent');
+            toast.success('Pickup request sent');
             await fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error sending pickup request', error);
-            alert('Error sending pickup request');
+            toast.error('Error sending pickup request');
         }
     };
 
@@ -71,16 +79,22 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
      */
     const handleAddTargetFloor = async (): Promise<void> => {
         if (selectedElevator === null) {
-            alert('Please select an elevator');
+            toast.error('Please select an elevator');
             return;
         }
+
+        if (targetFloor < 0 || targetFloor > numberOfFloors) {
+            toast.error(`Target floor must be between 0 and ${numberOfFloors}`);
+            return;
+        }
+
         try {
             await axios.post('http://localhost:5000/api/elevators/target', { id: selectedElevator, targetFloor });
-            alert(`Target floor ${targetFloor} added to Elevator ${selectedElevator}`);
+            toast.success(`Target floor ${targetFloor} added to Elevator ${selectedElevator}`);
             await fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error adding target floor', error);
-            alert('Error adding target floor');
+            toast.error('Error adding target floor');
         }
     };
 
@@ -114,6 +128,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
 
     return (
         <div>
+            <ToastContainer />
             <h2>Elevator Panel</h2>
             <div>
                 <label>
