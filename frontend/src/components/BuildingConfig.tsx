@@ -37,6 +37,34 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
         }
     };
 
+    /**
+     * Handle the change of the number of floors input value.
+     * 
+     * This function ensures that the entered number of floors value does not exceed the allowed range.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+     */
+    const handleNumberOfFloorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = parseInt(e.target.value, 10);
+        if (isNaN(value)) value = 1;
+        value = Math.max(1, Math.min(100, value));
+        setNumberOfFloors(value);
+    };
+
+    /**
+     * Handle the change of the active elevators input value.
+     * 
+     * This function ensures that the entered active elevators value does not exceed the allowed range.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+     */
+    const handleActiveElevatorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = parseInt(e.target.value, 10);
+        if (isNaN(value)) value = 1;
+        value = Math.max(1, Math.min(16, value));
+        setActiveElevators(value);
+    };
+
     return (
         <div>
             <h2>Building Configuration</h2>
@@ -46,7 +74,7 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
                     <input 
                         type="number" 
                         value={numberOfFloors} 
-                        onChange={(e) => setNumberOfFloors(parseInt(e.target.value, 10))}
+                        onChange={handleNumberOfFloorsChange}
                         min="1"
                         max="100"
                     />
@@ -58,7 +86,7 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
                     <input 
                         type="number" 
                         value={activeElevators} 
-                        onChange={(e) => setActiveElevators(parseInt(e.target.value, 10))}
+                        onChange={handleActiveElevatorsChange}
                         min="1"
                         max="16"
                     />

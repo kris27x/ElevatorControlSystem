@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 /**
@@ -18,6 +18,22 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
     const [direction, setDirection] = useState<number>(1);
     const [selectedElevator, setSelectedElevator] = useState<number | null>(null);
     const [targetFloor, setTargetFloor] = useState<number>(0);
+    const [availableElevators, setAvailableElevators] = useState<{ id: number, status: string }[]>([]);
+
+    useEffect(() => {
+        // Fetch the status of elevators to get the available ones
+        const fetchAvailableElevators = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/elevators/status');
+                const available = response.data.filter((elevator: { status: string }) => elevator.status !== 'off');
+                setAvailableElevators(available);
+            } catch (error) {
+                console.error('Error fetching elevator status', error);
+            }
+        };
+
+        fetchAvailableElevators();
+    }, [fetchStatus]); // Add fetchStatus as a dependency
 
     /**
      * Handle the pickup request.
@@ -35,28 +51,10 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
             // Send a POST request to the backend with the floor and direction
             await axios.post('http://localhost:5000/api/elevators/pickup', { floor, direction });
             alert('Pickup request sent');
-            fetchStatus(); // Fetch the updated status
+            await fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error sending pickup request', error);
             alert('Error sending pickup request');
-        }
-    };
-
-    /**
-     * Handle the change of the floor input value.
-     * 
-     * This function ensures that the entered floor value does not exceed the maximum number of floors.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
-     */
-    const handleFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value, 10);
-        if (value >= 0 && value <= numberOfFloors) {
-            setFloor(value);
-        } else if (value > numberOfFloors) {
-            setFloor(numberOfFloors);
-        } else {
-            setFloor(0);
         }
     };
 
@@ -79,11 +77,39 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
         try {
             await axios.post('http://localhost:5000/api/elevators/target', { id: selectedElevator, targetFloor });
             alert(`Target floor ${targetFloor} added to Elevator ${selectedElevator}`);
-            fetchStatus(); // Fetch the updated status
+            await fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error adding target floor', error);
             alert('Error adding target floor');
         }
+    };
+
+    /**
+     * Handle the change of the floor input value.
+     * 
+     * This function ensures that the entered floor value does not exceed the maximum number of floors.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+     */
+    const handleFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = parseInt(e.target.value, 10);
+        if (isNaN(value)) value = 0;
+        value = Math.max(0, Math.min(numberOfFloors, value));
+        setFloor(value);
+    };
+
+    /**
+     * Handle the change of the target floor input value.
+     * 
+     * This function ensures that the entered target floor value does not exceed the maximum number of floors.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+     */
+    const handleTargetFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = parseInt(e.target.value, 10);
+        if (isNaN(value)) value = 0;
+        value = Math.max(0, Math.min(numberOfFloors, value));
+        setTargetFloor(value);
     };
 
     return (
@@ -119,13 +145,17 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
             <div>
                 <label>
                     Select Elevator:
-                    <input
-                        type="number"
+                    <select
                         value={selectedElevator ?? ''}
                         onChange={(e) => setSelectedElevator(parseInt(e.target.value, 10))}
-                        min="0"
-                        max="15" // Assuming a maximum of 16 elevators
-                    />
+                    >
+                        <option value="" disabled>Select an elevator</option>
+                        {availableElevators.map((elevator) => (
+                            <option key={elevator.id} value={elevator.id}>
+                                Elevator {elevator.id} - {elevator.status}
+                            </option>
+                        ))}
+                    </select>
                 </label>
             </div>
             <div>
@@ -134,7 +164,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                     <input
                         type="number"
                         value={targetFloor}
-                        onChange={(e) => setTargetFloor(parseInt(e.target.value, 10))}
+                        onChange={handleTargetFloorChange}
                         min="0"
                         max={numberOfFloors}
                     />

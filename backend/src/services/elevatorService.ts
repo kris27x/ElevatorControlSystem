@@ -86,10 +86,7 @@ export const update = (id: number, floor: number, target: number): void => {
 export const addTarget = (id: number, targetFloor: number): void => {
     const elevator = building.elevators.find(e => e.id === id);
     if (elevator && elevator.status !== 'off') {
-        if (!elevator.targetFloors.includes(targetFloor)) {
-            elevator.targetFloors.push(targetFloor);
-            elevator.targetFloors.sort((a, b) => a - b); // Optional: Keep the target floors sorted
-        }
+        elevator.targetFloors.push(targetFloor);
     }
 };
 
