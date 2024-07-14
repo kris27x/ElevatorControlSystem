@@ -54,7 +54,6 @@ export const updateStatus = (id: number, floor: number, target: number): void =>
     }
 };
 
-
 /**
  * Update the status of a specific elevator.
  * 
@@ -73,6 +72,24 @@ export const update = (id: number, floor: number, target: number): void => {
             elevator.targetFloors.push(target);
         }
         elevator.status = target > floor ? 'up' : 'down';
+    }
+};
+
+/**
+ * Add a target floor to a specific elevator.
+ * 
+ * @param {number} id - The unique identifier of the elevator.
+ * @param {number} targetFloor - The target floor number to be added.
+ * 
+ * This function adds a target floor to the specified elevator's target floor list.
+ */
+export const addTarget = (id: number, targetFloor: number): void => {
+    const elevator = building.elevators.find(e => e.id === id);
+    if (elevator && elevator.status !== 'off') {
+        if (!elevator.targetFloors.includes(targetFloor)) {
+            elevator.targetFloors.push(targetFloor);
+            elevator.targetFloors.sort((a, b) => a - b); // Optional: Keep the target floors sorted
+        }
     }
 };
 

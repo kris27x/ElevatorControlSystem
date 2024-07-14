@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getStatus, pickup, update, step, configureBuilding as configureBuildingService } from '../services/elevatorService';
+import { getStatus, pickup, update, step, configureBuilding as configureBuildingService, addTarget } from '../services/elevatorService';
 import { selectBestElevator } from '../services/algorithm';
 import { Building } from '../models/building';
 
@@ -94,4 +94,27 @@ export const configureBuilding = (req: Request, res: Response): void => {
     const { numberOfFloors, activeElevators } = req.body;
     configureBuildingService(numberOfFloors, activeElevators);
     res.status(200).send('Building configuration updated');
+};
+
+/**
+ * Controller to handle adding a target floor to a specific elevator.
+ * 
+ * @param {Request} req - The HTTP request object.
+ * @param {Response} res - The HTTP response object.
+ * 
+ * @returns {void}
+ * 
+ * This function handles POST requests to add a target floor to an elevator.
+ * It extracts the elevator ID and target floor from the request body,
+ * then uses the addTarget service function to add the target floor to the elevator.
+ */
+export const addTargetFloor = (req: Request, res: Response): void => {
+    const { id, targetFloor } = req.body;
+    const elevator = building.elevators.find(e => e.id === id && e.status !== 'off');
+    if (elevator) {
+        addTarget(id, targetFloor);
+        res.status(200).send(`Target floor ${targetFloor} added to Elevator ${id}`);
+    } else {
+        res.status(404).send('No suitable elevator found or elevator is off');
+    }
 };

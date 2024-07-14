@@ -15,12 +15,13 @@ interface Elevator {
  * It utilizes the useState and useEffect hooks to maintain the state of the elevators and perform side effects,
  * such as fetching data from the backend server.
  * 
- * @returns {{ elevators: Elevator[], fetchStatus: () => Promise<void>, numberOfFloors: number, setNumberOfFloors: React.Dispatch<React.SetStateAction<number>> }}
- * An object containing the array of elevator statuses, a function to fetch the status, the number of floors, and a function to set the number of floors.
+ * @returns {{ elevators: Elevator[], fetchStatus: () => Promise<void>, addTarget: (id: number, targetFloor: number) => Promise<void>, numberOfFloors: number, setNumberOfFloors: React.Dispatch<React.SetStateAction<number>> }}
+ * An object containing the array of elevator statuses, functions to fetch the status and add target floors, the number of floors, and a function to set the number of floors.
  */
 const useElevatorSystem = (): {
     elevators: Elevator[],
     fetchStatus: () => Promise<void>,
+    addTarget: (id: number, targetFloor: number) => Promise<void>,
     numberOfFloors: number,
     setNumberOfFloors: React.Dispatch<React.SetStateAction<number>>
 } => {
@@ -73,14 +74,34 @@ const useElevatorSystem = (): {
         }
     };
 
+    /**
+     * Add a target floor to a specific elevator.
+     * 
+     * This function sends a POST request to the backend server to add a target floor to a specific elevator.
+     * 
+     * @param {number} id - The unique identifier of the elevator.
+     * @param {number} targetFloor - The target floor number to be added.
+     * @async
+     * @function
+     * @returns {Promise<void>} A promise that resolves when the target floor has been successfully added.
+     */
+    const addTarget = async (id: number, targetFloor: number): Promise<void> => {
+        try {
+            await axios.post('http://localhost:5000/api/elevators/target', { id, targetFloor });
+            fetchStatus(); // Refresh the status after adding a target floor
+        } catch (error) {
+            console.error('Error adding target floor', error);
+        }
+    };
+
     // Fetch status and building configuration when the hook is first used
     useEffect(() => {
         fetchStatus();
         fetchBuildingConfig();
     }, []);
 
-    // Return the elevators state, fetchStatus function, numberOfFloors state, and setNumberOfFloors function to be used by components
-    return { elevators, fetchStatus, numberOfFloors, setNumberOfFloors };
+    // Return the elevators state, fetchStatus function, addTarget function, numberOfFloors state, and setNumberOfFloors function to be used by components
+    return { elevators, fetchStatus, addTarget, numberOfFloors, setNumberOfFloors };
 };
 
 export default useElevatorSystem;
