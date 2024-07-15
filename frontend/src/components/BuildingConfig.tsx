@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Box, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -41,6 +41,15 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
         setFormData(data);
         setDialogOpen(true);
     };
+
+    useEffect(() => {
+        if (formData.numberOfFloors > MAX_FLOORS) {
+            setFormData({ ...formData, numberOfFloors: MAX_FLOORS });
+        }
+        if (formData.activeElevators > MAX_ELEVATORS) {
+            setFormData({ ...formData, activeElevators: MAX_ELEVATORS });
+        }
+    }, [formData]);
 
     /**
      * Handle confirmation of the update.

@@ -47,6 +47,18 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
         fetchAvailableElevators();
     }, [fetchStatus]);
 
+    useEffect(() => {
+        if (selectedElevator !== null && !availableElevators.some(elevator => elevator.id === selectedElevator)) {
+            setSelectedElevator(null);
+        }
+        if (floor > numberOfFloors) {
+            setFloor(1);
+        }
+        if (targetFloor > numberOfFloors) {
+            setTargetFloor(1);
+        }
+    }, [numberOfFloors, availableElevators]);
+
     /**
      * Handle the pickup request.
      * 
