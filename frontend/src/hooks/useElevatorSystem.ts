@@ -50,6 +50,7 @@ const useElevatorSystem = (): {
             setElevators(response.data);
         } catch (error) {
             console.error('Error fetching elevator status', error);
+            alert('Error fetching elevator status. Please try again later.');
         }
     };
 
@@ -72,6 +73,7 @@ const useElevatorSystem = (): {
             setNumberOfFloors(response.data.numberOfFloors);
         } catch (error) {
             console.error('Error fetching building configuration', error);
+            alert('Error fetching building configuration. Please try again later.');
         }
     };
 
@@ -92,6 +94,7 @@ const useElevatorSystem = (): {
             fetchStatus(); // Refresh the status after adding a target floor
         } catch (error) {
             console.error('Error adding target floor', error);
+            alert('Error adding target floor. Please try again later.');
         }
     };
 

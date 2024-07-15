@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         fetchBuildingConfig();
-    });
+    }, [fetchBuildingConfig]);
 
     /**
      * Handle the simulation step.

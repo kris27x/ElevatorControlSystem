@@ -60,9 +60,14 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
             await fetchStatus();
             onConfigUpdate(formData.numberOfFloors);
             reset();
-        } catch (error) {
-            console.error('Error updating building configuration', error);
-            alert('Error updating building configuration');
+        } catch (err) {
+            console.error('Error updating building configuration', err);
+            if (axios.isAxiosError(err)) {
+                const errorMessage = err.response?.data?.message || 'Failed to update building configuration. Please try again later.';
+                alert(`Error: ${errorMessage}`);
+            } else {
+                alert('An unexpected error occurred.');
+            }
         } finally {
             setDialogOpen(false);
         }
