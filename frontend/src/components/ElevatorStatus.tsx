@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, MenuItem, FormControl, Select, InputLabel, Box, Grid, Card, CardContent, SelectChangeEvent } from '@mui/material';
 import { motion } from 'framer-motion';
+import ErrorBoundary from './ErrorBoundary'; // Adjust the import path as necessary
 
+/**
+ * Elevator interface defining the structure of an elevator object.
+ */
 interface Elevator {
     id: number;
     currentFloor: number;
@@ -23,20 +27,40 @@ const ElevatorStatus: React.FC<{ elevators: Elevator[] }> = ({ elevators }) => {
     const [floorFilter, setFloorFilter] = useState<number | ''>('');
     const [idFilter, setIdFilter] = useState<number | ''>('');
 
+    /**
+     * Handles changes to the status filter.
+     * 
+     * @param {SelectChangeEvent<string>} event - The event triggered by changing the status filter.
+     */
     const handleStatusFilterChange = (event: SelectChangeEvent<string>) => {
         setStatusFilter(event.target.value as string);
     };
 
+    /**
+     * Handles changes to the floor filter.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The event triggered by changing the floor filter.
+     */
     const handleFloorFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value, 10);
         setFloorFilter(isNaN(value) ? '' : value);
     };
 
+    /**
+     * Handles changes to the ID filter.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The event triggered by changing the ID filter.
+     */
     const handleIdFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value, 10);
         setIdFilter(isNaN(value) ? '' : value);
     };
 
+    /**
+     * Filters the elevators based on the current filters.
+     * 
+     * @returns {Elevator[]} The filtered array of elevators.
+     */
     const filteredElevators = elevators.filter((elevator) => {
         return (
             (statusFilter === '' || elevator.status === statusFilter) &&
@@ -45,6 +69,12 @@ const ElevatorStatus: React.FC<{ elevators: Elevator[] }> = ({ elevators }) => {
         );
     });
 
+    /**
+     * Gets the color based on the elevator's status.
+     * 
+     * @param {string} status - The status of the elevator.
+     * @returns {string} The color associated with the status.
+     */
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'up':

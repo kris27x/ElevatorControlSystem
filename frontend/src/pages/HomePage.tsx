@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
+import { Container, Typography, Box, Button } from '@mui/material';
+import { motion } from 'framer-motion';
 import ElevatorPanel from '../components/ElevatorPanel';
 import ElevatorStatus from '../components/ElevatorStatus';
 import BuildingConfig from '../components/BuildingConfig';
 import useElevatorSystem from '../hooks/useElevatorSystem';
 import axios from 'axios';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 /**
  * HomePage component.
@@ -33,7 +36,12 @@ const HomePage: React.FC = () => {
      */
     async function handleSimulateStep(): Promise<void> {
         try {
-            await axios.post('http://localhost:5000/api/elevators/step');
+            await axios.post('http://localhost:5000/api/elevators/step', {}, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             alert('Simulation step executed');
             fetchStatus(); // Fetch the updated status
         } catch (error) {
@@ -55,13 +63,31 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1>Elevator Control System</h1>
-            <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
-            <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
-            <ElevatorStatus elevators={elevators} />
-            <button onClick={handleSimulateStep}>Simulate Step</button>
-        </div>
+        <Container>
+            <Box mt={4} mb={2}>
+                <Typography variant="h3" align="center" gutterBottom>
+                    Elevator Control System
+                </Typography>
+            </Box>
+            <ErrorBoundary>
+                <Box mb={4}>
+                    <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
+                </Box>
+                <Box mb={4}>
+                    <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
+                </Box>
+                <Box mb={4}>
+                    <ElevatorStatus elevators={elevators} />
+                </Box>
+            </ErrorBoundary>
+            <Box display="flex" justifyContent="center" mb={4}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="contained" color="primary" onClick={handleSimulateStep}>
+                        Simulate Step
+                    </Button>
+                </motion.div>
+            </Box>
+        </Container>
     );
 };
 
