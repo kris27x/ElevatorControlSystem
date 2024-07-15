@@ -100,19 +100,20 @@ export const addTarget = (id: number, targetFloor: number): void => {
  */
 export const step = (): void => {
     building.elevators.forEach(elevator => {
-        if (elevator.targetFloors.length > 0 && elevator.status !== 'off') {
+        if (elevator.status !== 'off') {
             const targetFloor = elevator.targetFloors[0];
             if (elevator.currentFloor < targetFloor) {
                 elevator.currentFloor++;
-                elevator.status = 'up';
+                elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
+                elevator.status = elevator.targetFloors.length > 0 ? 'up' : 'idle';
             } else if (elevator.currentFloor > targetFloor) {
                 elevator.currentFloor--;
-                elevator.status = 'down';
+                elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
+                elevator.status = elevator.targetFloors.length > 0 ? 'down' : 'idle';
             } else {
-                // Elevator has reached all target floors
-                elevator.status = elevator.targetFloors.length > 0 ? 'up' : 'idle';
+                elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
+                elevator.status = 'idle';
             }
-            elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
         }
     });
 };
