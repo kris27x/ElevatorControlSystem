@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Container, Typography, TextField, Button, Box, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { motion } from 'framer-motion';
+import ErrorBoundary from './ErrorBoundary';
+
+const MAX_FLOORS = 100;
+const MAX_ELEVATORS = 16;
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
  * BuildingConfig component.
@@ -11,89 +20,137 @@ import axios from 'axios';
  * @returns {JSX.Element} The rendered component.
  */
 const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdate: (numberOfFloors: number) => void }> = ({ fetchStatus, onConfigUpdate }) => {
-    // State variables for the number of floors and active elevators
-    const [numberOfFloors, setNumberOfFloors] = useState<number>(10);
-    const [activeElevators, setActiveElevators] = useState<number>(5);
+    const { control, handleSubmit, formState: { errors }, reset } = useForm({
+        defaultValues: {
+            numberOfFloors: 10,
+            activeElevators: 5,
+        }
+    });
+
+    const [isDialogOpen, setDialogOpen] = useState(false);
+    const [formData, setFormData] = useState({ numberOfFloors: 10, activeElevators: 5 });
 
     /**
-     * Handle the configuration update.
+     * Handle form submission.
      * 
-     * This function is called when the user clicks the "Update Configuration" button.
-     * It sends a POST request to the backend server with the specified number of floors and active elevators.
+     * This function is called when the user submits the form. It sets the form data and opens the confirmation dialog.
      * 
-     * @async
-     * @function
-     * @returns {Promise<void>}
+     * @param {{ numberOfFloors: number, activeElevators: number }} data - The form data containing the number of floors and active elevators.
      */
-    const handleConfigure = async (): Promise<void> => {
+    const onSubmit = (data: { numberOfFloors: number, activeElevators: number }) => {
+        setFormData(data);
+        setDialogOpen(true);
+    };
+
+    /**
+     * Handle confirmation of the update.
+     * 
+     * This function is called when the user confirms the update in the dialog. It sends a POST request to the backend
+     * to update the building configuration and then fetches the updated status.
+     */
+    const handleConfirm = async () => {
         try {
-            await axios.post('http://localhost:5000/api/elevators/configure', { numberOfFloors, activeElevators });
+            await axios.post(`${API_URL}/elevators/configure`, formData, {
+                withCredentials: true, // Ensure CSRF protection
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             alert('Building configuration updated');
-            await fetchStatus(); // Fetch the updated status to reset elevator statuses
-            onConfigUpdate(numberOfFloors); // Update the number of floors in the parent component
+            await fetchStatus();
+            onConfigUpdate(formData.numberOfFloors);
+            reset();
         } catch (error) {
             console.error('Error updating building configuration', error);
             alert('Error updating building configuration');
+        } finally {
+            setDialogOpen(false);
         }
     };
 
-    /**
-     * Handle the change of the number of floors input value.
-     * 
-     * This function ensures that the entered number of floors value does not exceed the allowed range.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
-     */
-    const handleNumberOfFloorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = parseInt(e.target.value, 10);
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(100, value));
-        setNumberOfFloors(value);
-    };
-
-    /**
-     * Handle the change of the active elevators input value.
-     * 
-     * This function ensures that the entered active elevators value does not exceed the allowed range.
-     * 
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
-     */
-    const handleActiveElevatorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = parseInt(e.target.value, 10);
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(16, value));
-        setActiveElevators(value);
-    };
-
     return (
-        <div>
-            <h2>Building Configuration</h2>
-            <div>
-                <label>
-                    Number of Floors:
-                    <input 
-                        type="number" 
-                        value={numberOfFloors} 
-                        onChange={handleNumberOfFloorsChange}
-                        min="1"
-                        max="100"
-                    />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Active Elevators:
-                    <input 
-                        type="number" 
-                        value={activeElevators} 
-                        onChange={handleActiveElevatorsChange}
-                        min="1"
-                        max="16"
-                    />
-                </label>
-            </div>
-            <button onClick={handleConfigure}>Update Configuration</button>
-        </div>
+        <ErrorBoundary>
+            <Container maxWidth="sm" component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                <Box my={4}>
+                    <Typography variant="h4" component="h1" gutterBottom>
+                        Building Configuration
+                    </Typography>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Box my={2}>
+                            <Controller
+                                name="numberOfFloors"
+                                control={control}
+                                rules={{
+                                    required: 'Number of floors is required',
+                                    min: { value: 1, message: `Minimum value is 1` },
+                                    max: { value: MAX_FLOORS, message: `Maximum value is ${MAX_FLOORS}` },
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Number of Floors"
+                                        type="number"
+                                        inputProps={{ min: 1, max: MAX_FLOORS }}
+                                        error={!!errors.numberOfFloors}
+                                        helperText={errors.numberOfFloors ? errors.numberOfFloors.message : `1-${MAX_FLOORS}`}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </Box>
+                        <Box my={2}>
+                            <Controller
+                                name="activeElevators"
+                                control={control}
+                                rules={{
+                                    required: 'Number of active elevators is required',
+                                    min: { value: 1, message: `Minimum value is 1` },
+                                    max: { value: MAX_ELEVATORS, message: `Maximum value is ${MAX_ELEVATORS}` },
+                                }}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Active Elevators"
+                                        type="number"
+                                        inputProps={{ min: 1, max: MAX_ELEVATORS }}
+                                        error={!!errors.activeElevators}
+                                        helperText={errors.activeElevators ? errors.activeElevators.message : `1-${MAX_ELEVATORS}`}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </Box>
+                        {errors.numberOfFloors || errors.activeElevators ? (
+                            <Alert severity="error" variant="outlined" sx={{ mb: 2 }}>
+                                Please fix the errors before submitting.
+                            </Alert>
+                        ) : null}
+                        <Box my={2}>
+                            <Button variant="contained" color="primary" type="submit" fullWidth>
+                                Update Configuration
+                            </Button>
+                        </Box>
+                    </form>
+                </Box>
+
+                <Dialog open={isDialogOpen} onClose={() => setDialogOpen(false)}>
+                    <DialogTitle>Confirm Update</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to update the building configuration to {formData.numberOfFloors} floors and {formData.activeElevators} active elevators?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setDialogOpen(false)} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleConfirm} color="primary">
+                            Confirm
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
+        </ErrorBoundary>
     );
 };
 
