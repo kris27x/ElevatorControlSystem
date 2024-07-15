@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getElevatorStatus, pickupElevator, updateElevator, executeStep, configureBuilding, addTargetFloor } from '../controllers/elevatorController';
+import { getElevatorStatus, pickupElevator, updateElevator, executeStep, addTargetFloor } from '../controllers/elevatorController';
 
 // Create a new router instance
 const router = Router();
@@ -43,16 +43,6 @@ router.post('/update', updateElevator);
  * It calls the executeStep controller function to perform the simulation step.
  */
 router.post('/step', executeStep);
-
-/**
- * Route to configure the building's number of floors and active elevators.
- * 
- * POST /api/elevators/configure
- * 
- * This route handles POST requests to configure the building's settings.
- * It calls the configureBuilding controller function to update the building configuration.
- */
-router.post('/configure', configureBuilding);
 
 /**
  * Route to add a target floor to a specific elevator.

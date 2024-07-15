@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ElevatorPanel from '../components/ElevatorPanel';
 import ElevatorStatus from '../components/ElevatorStatus';
 import BuildingConfig from '../components/BuildingConfig';
@@ -15,8 +15,11 @@ import axios from 'axios';
  * @returns {JSX.Element} The rendered component.
  */
 const HomePage: React.FC = () => {
-    const { elevators, fetchStatus } = useElevatorSystem();
-    const [numberOfFloors, setNumberOfFloors] = React.useState<number>(10);
+    const { elevators, fetchStatus, numberOfFloors, setNumberOfFloors, fetchBuildingConfig } = useElevatorSystem();
+
+    useEffect(() => {
+        fetchBuildingConfig();
+    });
 
     /**
      * Handle the simulation step.
@@ -28,7 +31,7 @@ const HomePage: React.FC = () => {
      * @function
      * @returns {Promise<void>} A promise that resolves when the simulation step is completed.
      */
-    const handleSimulateStep = async (): Promise<void> => {
+    async function handleSimulateStep(): Promise<void> {
         try {
             await axios.post('http://localhost:5000/api/elevators/step');
             alert('Simulation step executed');
@@ -37,7 +40,7 @@ const HomePage: React.FC = () => {
             console.error('Error executing simulation step', error);
             alert('Error executing simulation step');
         }
-    };
+    }
 
     /**
      * Handle the building configuration update.

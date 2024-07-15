@@ -1,3 +1,5 @@
+import { Elevator } from './elevator';
+
 /**
  * Interface representing the configuration of a building.
  * 
@@ -7,25 +9,6 @@
 export interface BuildingConfig {
     numberOfFloors: number;
     activeElevators: number;
-}
-
-/**
- * Interface representing an Elevator.
- * 
- * @property {number} id - Unique identifier for the elevator.
- * @property {number} currentFloor - Current floor where the elevator is located.
- * @property {number[]} targetFloors - List of target floors to which the elevator is moving.
- * @property {'up' | 'down' | 'idle' | 'off'} status - Current status of the elevator.
- * - 'up' indicates the elevator is moving up.
- * - 'down' indicates the elevator is moving down.
- * - 'idle' indicates the elevator is ready and waiting.
- * - 'off' indicates the elevator is not in use and cannot be selected.
- */
-export interface Elevator {
-    id: number;
-    currentFloor: number;
-    targetFloors: number[];
-    status: 'up' | 'down' | 'idle' | 'off';
 }
 
 /**
@@ -80,5 +63,14 @@ export class Building {
      */
     getElevatorStatus(): Elevator[] {
         return this.elevators;
+    }
+
+    /**
+     * Get the building configuration.
+     * 
+     * @returns {BuildingConfig} The current building configuration.
+     */
+    getConfig(): BuildingConfig {
+        return this.config;
     }
 }

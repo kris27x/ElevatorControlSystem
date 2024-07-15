@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getStatus, pickup, update, step, configureBuilding as configureBuildingService, addTarget } from '../services/elevatorService';
+import { getStatus, pickup, update, step, addTarget } from '../services/elevatorService';
 import { selectBestElevator } from '../services/algorithm';
 import { Building } from '../models/building';
 
@@ -76,24 +76,6 @@ export const updateElevator = (req: Request, res: Response): void => {
 export const executeStep = (_req: Request, res: Response): void => {
     step();
     res.status(200).send('Step executed');
-};
-
-/**
- * Controller to configure the building's number of floors and active elevators.
- * 
- * @param {Request} req - The HTTP request object.
- * @param {Response} res - The HTTP response object.
- * 
- * @returns {void}
- * 
- * This function handles POST requests to configure the building's settings.
- * It extracts the number of floors and active elevators from the request body,
- * then uses the configureBuilding service function to update the building's configuration.
- */
-export const configureBuilding = (req: Request, res: Response): void => {
-    const { numberOfFloors, activeElevators } = req.body;
-    configureBuildingService(numberOfFloors, activeElevators);
-    res.status(200).send('Building configuration updated');
 };
 
 /**

@@ -50,7 +50,7 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
      */
     const handleConfirm = async () => {
         try {
-            await axios.post(`${API_URL}/elevators/configure`, formData, {
+            await axios.post(`${API_URL}/building/configure`, formData, {
                 withCredentials: true, // Ensure CSRF protection
                 headers: {
                     'Content-Type': 'application/json',

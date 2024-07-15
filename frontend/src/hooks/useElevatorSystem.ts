@@ -4,7 +4,7 @@ import axios from 'axios';
 interface Elevator {
     id: number;
     currentFloor: number;
-    targetFloors: number[]; // Updated to handle multiple targets
+    targetFloors: number[];
     status: 'up' | 'down' | 'idle' | 'off';
 }
 
@@ -15,15 +15,16 @@ interface Elevator {
  * It utilizes the useState and useEffect hooks to maintain the state of the elevators and perform side effects,
  * such as fetching data from the backend server.
  * 
- * @returns {{ elevators: Elevator[], fetchStatus: () => Promise<void>, addTarget: (id: number, targetFloor: number) => Promise<void>, numberOfFloors: number, setNumberOfFloors: React.Dispatch<React.SetStateAction<number>> }}
- * An object containing the array of elevator statuses, functions to fetch the status and add target floors, the number of floors, and a function to set the number of floors.
+ * @returns {{ elevators: Elevator[], fetchStatus: () => Promise<void>, addTarget: (id: number, targetFloor: number) => Promise<void>, numberOfFloors: number, setNumberOfFloors: React.Dispatch<React.SetStateAction<number>>, fetchBuildingConfig: () => Promise<void> }}
+ * An object containing the array of elevator statuses, functions to fetch the status and add target floors, the number of floors, a function to set the number of floors, and a function to fetch the building configuration.
  */
 const useElevatorSystem = (): {
     elevators: Elevator[],
     fetchStatus: () => Promise<void>,
     addTarget: (id: number, targetFloor: number) => Promise<void>,
     numberOfFloors: number,
-    setNumberOfFloors: React.Dispatch<React.SetStateAction<number>>
+    setNumberOfFloors: React.Dispatch<React.SetStateAction<number>>,
+    fetchBuildingConfig: () => Promise<void>
 } => {
     // State variable to store the status of all elevators
     const [elevators, setElevators] = useState<Elevator[]>([]);
@@ -100,8 +101,8 @@ const useElevatorSystem = (): {
         fetchBuildingConfig();
     }, []);
 
-    // Return the elevators state, fetchStatus function, addTarget function, numberOfFloors state, and setNumberOfFloors function to be used by components
-    return { elevators, fetchStatus, addTarget, numberOfFloors, setNumberOfFloors };
+    // Return the elevators state, fetchStatus function, addTarget function, numberOfFloors state, setNumberOfFloors function, and fetchBuildingConfig function to be used by components
+    return { elevators, fetchStatus, addTarget, numberOfFloors, setNumberOfFloors, fetchBuildingConfig };
 };
 
 export default useElevatorSystem;

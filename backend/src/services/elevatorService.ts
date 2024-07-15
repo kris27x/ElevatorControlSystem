@@ -117,7 +117,6 @@ export const step = (): void => {
     });
 };
 
-
 /**
  * Configure the building with a new number of floors and active elevators.
  * 
@@ -148,4 +147,13 @@ export const resetElevators = (activeElevators: number): void => {
             elevator.status = 'off';
         }
     });
+};
+
+/**
+ * Get the current building configuration.
+ * 
+ * @returns {{ numberOfFloors: number, activeElevators: number }} The current building configuration.
+ */
+export const getBuildingConfig = (): { numberOfFloors: number, activeElevators: number } => {
+    return building.getConfig();
 };
