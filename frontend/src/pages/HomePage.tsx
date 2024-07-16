@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Box, Button } from '@mui/material';
+import { Container, Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import ElevatorPanel from '../components/ElevatorPanel';
 import ElevatorStatus from '../components/ElevatorStatus';
@@ -63,23 +63,44 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <Container>
+        <Container maxWidth="md">
             <ErrorBoundary>
-                <Box mb={4}>
-                    <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
+                <Box my={4}>
+                    <Card variant="outlined" sx={{ borderRadius: 4, boxShadow: 3 }}>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom textAlign="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                Control Panel
+                            </Typography>
+                            <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
+                        </CardContent>
+                    </Card>
                 </Box>
-                <Box mb={4}>
-                    <ElevatorStatus elevators={elevators} />
-                    <Box display="flex" justifyContent="center" mb={4} mt={2}>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Button variant="contained" color="primary" onClick={handleSimulateStep}>
-                                Simulate Step
-                            </Button>
-                        </motion.div>
-                    </Box>
+                <Box my={4}>
+                    <Card variant="outlined" sx={{ borderRadius: 4, boxShadow: 3 }}>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom textAlign="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                System Status
+                            </Typography>
+                            <ElevatorStatus elevators={elevators} />
+                            <Box display="flex" justifyContent="center" mt={4}>
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Button variant="contained" color="primary" onClick={handleSimulateStep}>
+                                        Simulate Step
+                                    </Button>
+                                </motion.div>
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Box>
-                <Box mb={4}>
-                    <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
+                <Box my={4}>
+                    <Card variant="outlined" sx={{ borderRadius: 4, boxShadow: 3 }}>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom textAlign="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                Building Configuration
+                            </Typography>
+                            <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
+                        </CardContent>
+                    </Card>
                 </Box>
             </ErrorBoundary>
         </Container>

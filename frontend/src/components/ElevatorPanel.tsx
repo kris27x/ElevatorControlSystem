@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Box, Alert, FormControl, Select, MenuItem, InputLabel, Grid } from '@mui/material';
+import { Container, TextField, Button, Box, Alert, FormControl, Select, MenuItem, InputLabel, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -162,9 +162,6 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
         <ErrorBoundary>
             <Container maxWidth="md" component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
                 <Box my={4} textAlign="center">
-                    <Typography variant="h4" component="h1" gutterBottom>
-                        Elevator Panel
-                    </Typography>
                     {error && (
                         <Alert severity="error" variant="outlined" sx={{ mb: 2 }}>
                             {error}
@@ -173,9 +170,6 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
                             <form>
-                                <Typography variant="h6" component="h2" gutterBottom>
-                                    Call Elevator
-                                </Typography>
                                 <Box my={2}>
                                     <TextField
                                         label="Floor"
@@ -208,9 +202,6 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <form>
-                                <Typography variant="h6" component="h2" gutterBottom>
-                                    Add Target Floor
-                                </Typography>
                                 <Box my={2}>
                                     <TextField
                                         label="Target Floor"
