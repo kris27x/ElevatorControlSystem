@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Box, Alert, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { Container, Typography, TextField, Button, Box, Alert, FormControl, Select, MenuItem, InputLabel, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -160,7 +160,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
 
     return (
         <ErrorBoundary>
-            <Container maxWidth="sm" component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+            <Container maxWidth="md" component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
                         Elevator Panel
@@ -170,74 +170,82 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                             {error}
                         </Alert>
                     )}
-                    <form>
-                        <Box my={2}>
-                            <TextField
-                                label="Floor"
-                                type="number"
-                                value={floor}
-                                onChange={handleFloorChange}
-                                inputProps={{ min: 1, max: numberOfFloors }}
-                                fullWidth
-                            />
-                        </Box>
-                        <Box my={2}>
-                            <FormControl fullWidth>
-                                <InputLabel>Direction</InputLabel>
-                                <Select
-                                    value={String(direction)} // Ensure the value is a string
-                                    onChange={(e) => setDirection(parseInt(e.target.value))}
-                                    fullWidth
-                                >
-                                    <MenuItem value="1">Up</MenuItem>
-                                    <MenuItem value="-1">Down</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <Box my={2}>
-                            <Button variant="contained" color="primary" onClick={handlePickup} fullWidth>
-                                Call Elevator
-                            </Button>
-                        </Box>
-                    </form>
-                    <hr />
-                    <Typography variant="h5" component="h2" gutterBottom>
-                        Add Target Floor
-                    </Typography>
-                    <form>
-                        <Box my={2}>
-                            <FormControl fullWidth>
-                                <InputLabel>Select Elevator</InputLabel>
-                                <Select
-                                    value={selectedElevator !== null ? String(selectedElevator) : ''}
-                                    onChange={(e) => setSelectedElevator(parseInt(e.target.value))}
-                                    fullWidth
-                                >
-                                    <MenuItem value="" disabled>Select an elevator</MenuItem>
-                                    {availableElevators.map((elevator) => (
-                                        <MenuItem key={elevator.id} value={String(elevator.id)}>
-                                            Elevator {elevator.id} - {elevator.status}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <Box my={2}>
-                            <TextField
-                                label="Target Floor"
-                                type="number"
-                                value={targetFloor}
-                                onChange={handleTargetFloorChange}
-                                inputProps={{ min: 1, max: numberOfFloors }}
-                                fullWidth
-                            />
-                        </Box>
-                        <Box my={2}>
-                            <Button variant="contained" color="primary" onClick={handleAddTargetFloor} fullWidth>
-                                Add Target Floor
-                            </Button>
-                        </Box>
-                    </form>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <form>
+                                <Typography variant="h6" component="h2" gutterBottom>
+                                    Call Elevator
+                                </Typography>
+                                <Box my={2}>
+                                    <TextField
+                                        label="Floor"
+                                        type="number"
+                                        value={floor}
+                                        onChange={handleFloorChange}
+                                        inputProps={{ min: 1, max: numberOfFloors }}
+                                        fullWidth
+                                    />
+                                </Box>
+                                <Box my={2}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Direction</InputLabel>
+                                        <Select
+                                            value={String(direction)}
+                                            onChange={(e) => setDirection(parseInt(e.target.value))}
+                                            fullWidth
+                                        >
+                                            <MenuItem value="1">Up</MenuItem>
+                                            <MenuItem value="-1">Down</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                                <Box my={2}>
+                                    <Button variant="contained" color="primary" onClick={handlePickup} fullWidth>
+                                        Call Elevator
+                                    </Button>
+                                </Box>
+                            </form>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <form>
+                                <Typography variant="h6" component="h2" gutterBottom>
+                                    Add Target Floor
+                                </Typography>
+                                <Box my={2}>
+                                    <TextField
+                                        label="Target Floor"
+                                        type="number"
+                                        value={targetFloor}
+                                        onChange={handleTargetFloorChange}
+                                        inputProps={{ min: 1, max: numberOfFloors }}
+                                        fullWidth
+                                    />
+                                </Box>
+                                <Box my={2}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Select Elevator</InputLabel>
+                                        <Select
+                                            value={selectedElevator !== null ? String(selectedElevator) : ''}
+                                            onChange={(e) => setSelectedElevator(parseInt(e.target.value))}
+                                            fullWidth
+                                        >
+                                            <MenuItem value="" disabled>Select an elevator</MenuItem>
+                                            {availableElevators.map((elevator) => (
+                                                <MenuItem key={elevator.id} value={String(elevator.id)}>
+                                                    Elevator {elevator.id} - {elevator.status}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                                <Box my={2}>
+                                    <Button variant="contained" color="primary" onClick={handleAddTargetFloor} fullWidth>
+                                        Add Target Floor
+                                    </Button>
+                                </Box>
+                            </form>
+                        </Grid>
+                    </Grid>
                 </Box>
                 <ToastContainer />
             </Container>
