@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getStatus, pickup, update, step, addTarget } from '../services/elevatorService';
+import { getStatus, pickup, step, addTarget } from '../services/elevatorService';
 import { selectBestElevator } from '../services/algorithm';
 import { Building } from '../models/building';
 
@@ -42,24 +42,6 @@ export const pickupElevator = (req: Request, res: Response): void => {
     } else {
         res.status(404).send('No suitable elevator found for pickup request');
     }
-};
-
-/**
- * Controller to handle updates to the elevator status.
- * 
- * @param {Request} req - The HTTP request object.
- * @param {Response} res - The HTTP response object.
- * 
- * @returns {void}
- * 
- * This function handles POST requests to update the status of a specific elevator.
- * It extracts the elevator ID, current floor, and target floor from the request body,
- * then uses the update service function to update the elevator status. A success response is sent back to the client.
- */
-export const updateElevator = (req: Request, res: Response): void => {
-    const { id, floor, target } = req.body;
-    update(id, floor, target);
-    res.status(200).send('Update request received');
 };
 
 /**

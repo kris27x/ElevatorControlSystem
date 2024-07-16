@@ -59,33 +59,6 @@ export const updateStatus = (id: number, floor: number): void => {
 };
 
 /**
- * Update the status of a specific elevator and push the target.
- * 
- * @param {number} id - The unique identifier of the elevator.
- * @param {number} floor - The current floor number of the elevator.
- * @param {number} target - The target floor number of the elevator (can be null).
- * 
- * This function updates the status of a specific elevator. It sets the elevator's current floor,
- * pushes the target floor to the targetFloors array if provided, and updates the status based on 
- * the first target floor in the array. If there are no targets, the status is set to 'idle'.
- */
-export const update = (id: number, floor: number, target: number | null): void => {
-    const elevator = building.elevators.find(e => e.id === id);
-    if (elevator && elevator.status !== 'off') {
-        elevator.currentFloor = floor;
-        if (target !== null) {
-            elevator.targetFloors.push(target);
-        }
-        if (elevator.targetFloors.length > 0) {
-            const firstTarget = elevator.targetFloors[0];
-            elevator.status = firstTarget > floor ? 'up' : 'down';
-        } else {
-            elevator.status = 'idle';
-        }
-    }
-};
-
-/**
  * Add a target floor to a specific elevator.
  * 
  * @param {number} id - The unique identifier of the elevator.

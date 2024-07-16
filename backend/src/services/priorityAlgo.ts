@@ -4,7 +4,7 @@ import { Elevator } from '../models/elevator';
  * Sort elevator requests based on the current floor and direction of the elevator.
  * 
  * @param {number} currentFloor - The current floor of the elevator.
- * @param {'up' | 'down' | 'idle'} direction - The current direction of the elevator.
+ * @param {'up' | 'down' | 'idle' | 'off'} direction - The current status/direction of the elevator.
  * @param {number[]} targetFloors - List of target floors.
  * @returns {number[]} Sorted list of target floors.
  */

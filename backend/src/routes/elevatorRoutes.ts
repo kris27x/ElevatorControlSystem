@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getElevatorStatus, pickupElevator, updateElevator, executeStep, addTargetFloor } from '../controllers/elevatorController';
+import { getElevatorStatus, pickupElevator, executeStep, addTargetFloor } from '../controllers/elevatorController';
 
 // Create a new router instance
 const router = Router();
@@ -23,16 +23,6 @@ router.get('/status', getElevatorStatus);
  * It calls the pickupElevator controller function to process the request.
  */
 router.post('/pickup', pickupElevator);
-
-/**
- * Route to update the status of a specific elevator.
- * 
- * POST /api/elevators/update
- * 
- * This route handles POST requests to update the status of a specific elevator.
- * It calls the updateElevator controller function to update the elevator status.
- */
-router.post('/update', updateElevator);
 
 /**
  * Route to execute a simulation step for all elevators.
