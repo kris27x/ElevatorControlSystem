@@ -1,6 +1,7 @@
 import { Elevator } from '../models/elevator';
 import { Building } from '../models/building';
-import { selectBestElevator } from './algorithm'; // Import the selectBestElevator function
+import { updateElevatorTargets } from './priorityAlgo';
+import { selectBestElevator } from './algorithm';
 
 // Create a building instance with initial configuration
 const building = new Building(10, 5); // Default to 10 floors and 5 active elevators
@@ -109,18 +110,27 @@ export const addTarget = (id: number, targetFloor: number): void => {
  */
 export const step = (): void => {
     building.elevators.forEach(elevator => {
-        if (elevator.status !== 'off') {
+        if (elevator.status !== 'off' && elevator.targetFloors.length > 0) {
+            // Update the target floors using the priority algorithm
+            updateElevatorTargets(elevator);
             const targetFloor = elevator.targetFloors[0];
+
+            // Adjust elevator's current floor based on the sorted target
             if (elevator.currentFloor < targetFloor) {
                 elevator.currentFloor++;
-                elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
-                elevator.status = elevator.targetFloors.length > 0 ? 'up' : 'idle';
             } else if (elevator.currentFloor > targetFloor) {
                 elevator.currentFloor--;
+            }
+
+            // Remove all matching target floors if reached
+            if (elevator.currentFloor === targetFloor) {
                 elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
-                elevator.status = elevator.targetFloors.length > 0 ? 'down' : 'idle';
+            }
+
+            // Set elevator status based on remaining targets
+            if (elevator.targetFloors.length > 0) {
+                elevator.status = elevator.currentFloor < elevator.targetFloors[0] ? 'up' : 'down';
             } else {
-                elevator.targetFloors = elevator.targetFloors.filter(floor => floor !== elevator.currentFloor);
                 elevator.status = 'idle';
             }
         }
