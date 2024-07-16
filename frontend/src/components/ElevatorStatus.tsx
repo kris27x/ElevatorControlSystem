@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, MenuItem, FormControl, Select, InputLabel, Box, Grid, Card, CardContent, SelectChangeEvent } from '@mui/material';
 import { motion } from 'framer-motion';
-import ErrorBoundary from './ErrorBoundary'; // Adjust the import path as necessary
 
 /**
  * Elevator interface defining the structure of an elevator object.

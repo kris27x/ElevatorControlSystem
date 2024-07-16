@@ -57,7 +57,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
         if (targetFloor > numberOfFloors) {
             setTargetFloor(1);
         }
-    }, [numberOfFloors, availableElevators]);
+    }, [numberOfFloors, availableElevators, selectedElevator, floor, targetFloor]);
 
     /**
      * Handle the pickup request.
@@ -71,8 +71,8 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
      * @returns {Promise<void>} A promise that resolves when the request is completed.
      */
     const handlePickup = async (): Promise<void> => {
-        if (floor < 1 || floor > numberOfFloors) {
-            toast.error(`Floor must be between 1 and ${numberOfFloors}`);
+        if (floor < 0 || floor > (numberOfFloors - 1)) {
+            toast.error(`Floor must be between 0 and ${(numberOfFloors - 1)}`);
             return;
         }
 
@@ -109,8 +109,8 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
             return;
         }
 
-        if (targetFloor < 1 || targetFloor > numberOfFloors) {
-            toast.error(`Target floor must be between 1 and ${numberOfFloors}`);
+        if (targetFloor < 0 || targetFloor > (numberOfFloors - 1)) {
+            toast.error(`Target floor must be between 0 and ${(numberOfFloors - 1)}`);
             return;
         }
 
@@ -139,8 +139,8 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
      */
     const handleFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = parseInt(e.target.value, 10);
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(numberOfFloors, value));
+        if (isNaN(value)) value = 0;
+        value = Math.max(0, Math.min(numberOfFloors - 1, value));
         setFloor(value);
     };
 
@@ -153,8 +153,8 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
      */
     const handleTargetFloorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = parseInt(e.target.value, 10);
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(numberOfFloors, value));
+        if (isNaN(value)) value = 0;
+        value = Math.max(0, Math.min(numberOfFloors - 1, value));
         setTargetFloor(value);
     };
 
@@ -182,7 +182,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                                         type="number"
                                         value={floor}
                                         onChange={handleFloorChange}
-                                        inputProps={{ min: 1, max: numberOfFloors }}
+                                        inputProps={{ min: 0, max: numberOfFloors - 1}}
                                         fullWidth
                                     />
                                 </Box>
@@ -217,7 +217,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
                                         type="number"
                                         value={targetFloor}
                                         onChange={handleTargetFloorChange}
-                                        inputProps={{ min: 1, max: numberOfFloors }}
+                                        inputProps={{ min: 0, max: numberOfFloors - 1}}
                                         fullWidth
                                     />
                                 </Box>
