@@ -1,5 +1,29 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .App {
   text-align: center;
+}
+
+.App-header {
+  background-color: #1976d2;
+  color: white;
+  padding: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+main {
+  padding: 40px 20px;
 }
 
 .App-logo {
@@ -13,19 +37,14 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
   color: #61dafb;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.App-link:hover {
+  text-decoration: underline;
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +54,62 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.Container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Container h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.Button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.Button:hover {
+  background-color: #155a9a;
+}
+
+.FormControl {
+  margin-bottom: 20px;
+}
+
+.FormControl label {
+  font-weight: bold;
+}
+
+.TextField, .Select {
+  width: 100%;
+}
+
+.ToastContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.ErrorAlert {
+  margin-bottom: 20px;
+  color: red;
+  border: 1px solid red;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #fdd;
 }

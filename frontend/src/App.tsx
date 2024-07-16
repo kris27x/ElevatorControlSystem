@@ -1,6 +1,30 @@
 import React from 'react';
 import HomePage from './pages/HomePage';
+import { Container, CssBaseline, AppBar, Toolbar, Typography } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
+
+// Create a custom theme to enhance the UI appearance
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+  typography: {
+    h1: {
+      fontSize: '2rem',
+      fontWeight: 500,
+    },
+    h2: {
+      fontSize: '1.5rem',
+      fontWeight: 400,
+    },
+  },
+});
 
 /**
  * Main application component.
@@ -12,14 +36,21 @@ import './App.css';
  */
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Elevator Control System</h1>
-      </header>
-      <main>
-        <HomePage />
-      </main>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" color="inherit">
+            Elevator Control System
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="lg">
+        <main>
+          <HomePage />
+        </main>
+      </Container>
+    </ThemeProvider>
   );
 };
 
