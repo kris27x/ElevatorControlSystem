@@ -31,7 +31,9 @@ export const getStatus = (): Elevator[] => {
 export const pickup = (floor: number, direction: number): void => {
     const bestElevator = selectBestElevator(building.elevators, floor, direction);
     if (bestElevator) {
-        bestElevator.targetFloors.push(floor);
+        if (!bestElevator.targetFloors.includes(floor)) {
+            bestElevator.targetFloors.push(floor);
+        }
         updateStatus(bestElevator.id, bestElevator.currentFloor);
     } else {
         console.log('No suitable elevator found for pickup request');
@@ -69,7 +71,9 @@ export const updateStatus = (id: number, floor: number): void => {
 export const addTarget = (id: number, targetFloor: number): void => {
     const elevator = building.elevators.find(e => e.id === id);
     if (elevator && elevator.status !== 'off') {
-        elevator.targetFloors.push(targetFloor);
+        if (!elevator.targetFloors.includes(targetFloor)) {
+            elevator.targetFloors.push(targetFloor);
+        }
         updateStatus(elevator.id, elevator.currentFloor);
     }
 };

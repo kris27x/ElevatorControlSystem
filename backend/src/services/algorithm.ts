@@ -27,14 +27,21 @@ export const selectBestElevator = (elevators: Elevator[], callFloor: number, dir
         return getBestElevatorBasedOnTargetDifference(suitableElevators);
     }
 
-    // Priority 2: Idle elevators
+    // Priority 2: Elevators already targeting the call floor but not moving in the same direction
+    suitableElevators = elevators.filter(elevator => elevator.targetFloors.includes(callFloor));
+
+    if (suitableElevators.length > 1) {
+        return getClosestElevator(suitableElevators, callFloor);
+    }
+
+    // Priority 3: Idle elevators
     suitableElevators = elevators.filter(elevator => elevator.status === 'idle');
 
     if (suitableElevators.length > 0) {
         return getClosestElevator(suitableElevators, callFloor);
     }
 
-    // Priority 3: Elevators moving towards the call floor
+    // Priority 4: Elevators moving towards the call floor
     suitableElevators = elevators.filter(elevator => {
         if (elevator.status === 'off') return false;
 
@@ -48,7 +55,7 @@ export const selectBestElevator = (elevators: Elevator[], callFloor: number, dir
         return getBestElevatorBasedOnTargetDifference(suitableElevators);
     }
 
-    // Priority 4: Closest elevators not moving away
+    // Priority 5: Closest elevators not moving away
     suitableElevators = elevators.filter(elevator => {
         if (elevator.status === 'off') return false;
 
@@ -82,7 +89,7 @@ const getBestElevatorBasedOnTargetDifference = (suitableElevators: Elevator[]): 
         const currentElevator = suitableElevators[i];
         const nextElevator = suitableElevators[i + 1];
 
-        if (nextElevator && (currentElevator.targetFloors.length - nextElevator.targetFloors.length > 3)) {
+        if (nextElevator && (currentElevator.targetFloors.length - nextElevator.targetFloors.length > 2)) {
             return nextElevator;
         }
 
