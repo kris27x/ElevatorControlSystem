@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Container, Box, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import ElevatorPanel from '../components/ElevatorPanel';
 import ElevatorStatus from '../components/ElevatorStatus';
@@ -64,29 +64,24 @@ const HomePage: React.FC = () => {
 
     return (
         <Container>
-            <Box mt={4} mb={2}>
-                <Typography variant="h3" align="center" gutterBottom>
-                    Elevator Control System
-                </Typography>
-            </Box>
             <ErrorBoundary>
-                <Box mb={4}>
-                    <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
-                </Box>
                 <Box mb={4}>
                     <ElevatorPanel fetchStatus={fetchStatus} numberOfFloors={numberOfFloors} />
                 </Box>
                 <Box mb={4}>
                     <ElevatorStatus elevators={elevators} />
+                    <Box display="flex" justifyContent="center" mb={4} mt={2}>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button variant="contained" color="primary" onClick={handleSimulateStep}>
+                                Simulate Step
+                            </Button>
+                        </motion.div>
+                    </Box>
+                </Box>
+                <Box mb={4}>
+                    <BuildingConfig fetchStatus={fetchStatus} onConfigUpdate={handleBuildingConfigUpdate} />
                 </Box>
             </ErrorBoundary>
-            <Box display="flex" justifyContent="center" mb={4}>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button variant="contained" color="primary" onClick={handleSimulateStep}>
-                        Simulate Step
-                    </Button>
-                </motion.div>
-            </Box>
         </Container>
     );
 };

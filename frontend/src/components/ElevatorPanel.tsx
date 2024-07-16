@@ -161,7 +161,7 @@ const ElevatorPanel: React.FC<{ fetchStatus: () => Promise<void>; numberOfFloors
     return (
         <ErrorBoundary>
             <Container maxWidth="md" component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-                <Box my={4}>
+                <Box my={4} textAlign="center">
                     <Typography variant="h4" component="h1" gutterBottom>
                         Elevator Panel
                     </Typography>

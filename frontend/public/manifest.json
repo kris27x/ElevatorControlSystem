@@ -19,8 +19,10 @@
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#1976d2",
   "background_color": "#ffffff",
+  "orientation": "portrait",
   "description": "A web application for managing elevator operations in a building."
 }

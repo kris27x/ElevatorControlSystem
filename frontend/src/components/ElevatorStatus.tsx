@@ -92,7 +92,9 @@ const ElevatorStatus: React.FC<{ elevators: Elevator[] }> = ({ elevators }) => {
     return (
         <Container>
             <Typography variant="h5" component="h1" gutterBottom>
-                Elevator Status
+                <Box textAlign="center">
+                    Elevator Status
+                </Box>
             </Typography>
             <Box mb={2}>
                 <Grid container spacing={1}>
