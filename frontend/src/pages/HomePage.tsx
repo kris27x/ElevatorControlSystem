@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Container, Box, Button, Card, CardContent, Typography } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { Container, Box, Button, Card, CardContent, Typography, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
 import ElevatorPanel from '../components/ElevatorPanel';
 import ElevatorStatus from '../components/ElevatorStatus';
@@ -19,6 +19,9 @@ import ErrorBoundary from '../components/ErrorBoundary';
  */
 const HomePage: React.FC = () => {
     const { elevators, fetchStatus, numberOfFloors, setNumberOfFloors, fetchBuildingConfig } = useElevatorSystem();
+    const [intervalMs, setIntervalMs] = useState<number>(1000); // Default interval of 1000ms
+    const [isSimulating, setIsSimulating] = useState<boolean>(false);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         fetchBuildingConfig();
@@ -42,7 +45,6 @@ const HomePage: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            alert('Simulation step executed');
             fetchStatus(); // Fetch the updated status
         } catch (error) {
             console.error('Error executing simulation step', error);
@@ -60,6 +62,45 @@ const HomePage: React.FC = () => {
      */
     const handleBuildingConfigUpdate = (newNumberOfFloors: number) => {
         setNumberOfFloors(newNumberOfFloors);
+    };
+
+    /**
+     * Start the simulation.
+     * 
+     * This function starts the simulation by setting an interval to call handleSimulateStep
+     * every intervalMs milliseconds.
+     */
+    const startSimulation = () => {
+        if (!isSimulating) {
+            setIsSimulating(true);
+            intervalRef.current = setInterval(handleSimulateStep, intervalMs);
+        }
+    };
+
+    /**
+     * Stop the simulation.
+     * 
+     * This function stops the simulation by clearing the interval.
+     */
+    const stopSimulation = () => {
+        if (isSimulating) {
+            setIsSimulating(false);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        }
+    };
+
+    /**
+     * Handle interval change.
+     * 
+     * This function updates the intervalMs state when the user changes the interval input.
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The input change event.
+     */
+    const handleIntervalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIntervalMs(Number(event.target.value));
     };
 
     return (
@@ -85,7 +126,26 @@ const HomePage: React.FC = () => {
                             <Box display="flex" justifyContent="center" mt={4}>
                                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                     <Button variant="contained" color="primary" onClick={handleSimulateStep}>
-                                        Simulate Step
+                                        Simulate Single Step
+                                    </Button>
+                                </motion.div>
+                            </Box>
+                            <Box display="flex" justifyContent="center" mt={4}>
+                                <TextField
+                                    label="Interval (ms)"
+                                    type="number"
+                                    value={intervalMs}
+                                    onChange={handleIntervalChange}
+                                    sx={{ mr: 2 }}
+                                />
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Button variant="contained" color="primary" onClick={startSimulation} disabled={isSimulating}>
+                                        Start Simulation
+                                    </Button>
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Button variant="contained" color="secondary" onClick={stopSimulation} disabled={!isSimulating} style={{ marginLeft: '8px' }}>
+                                        Stop Simulation
                                     </Button>
                                 </motion.div>
                             </Box>
