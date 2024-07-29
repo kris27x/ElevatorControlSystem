@@ -30,6 +30,21 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [formData, setFormData] = useState({ numberOfFloors: 10, activeElevators: 5 });
 
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/building/config`);
+                const { numberOfFloors, activeElevators } = response.data;
+                setFormData({ numberOfFloors, activeElevators });
+                reset({ numberOfFloors, activeElevators });
+            } catch (error) {
+                console.error('Error fetching building configuration', error);
+            }
+        };
+
+        fetchConfig();
+    }, [reset]);
+
     /**
      * Handle form submission.
      * 
@@ -68,7 +83,7 @@ const BuildingConfig: React.FC<{ fetchStatus: () => Promise<void>, onConfigUpdat
             alert('Building configuration updated');
             await fetchStatus();
             onConfigUpdate(formData.numberOfFloors);
-            reset();
+            reset(formData); // Reset the form with the updated data
         } catch (err) {
             console.error('Error updating building configuration', err);
             if (axios.isAxiosError(err)) {
